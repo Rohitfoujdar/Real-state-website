@@ -93,3 +93,104 @@ export const register = async (req, res) => {
     return res.status(500).json({ error: "Something went wrong try again" });
   }
 };
+
+export const login = async(req,res)=>{
+  try{
+    const { email, password } = req.body;
+    //find user by email
+    const user = await User.findOne({email});
+    //compare password
+    const match = await comparePassword(password, user.password);
+    if(!match){
+      return res.status(500).json({ error: "Wrong password" });
+    }
+    //jwt
+    const token = jwt.sign({ _id: user._id }, config.JWT_SECRET, {
+      expiresIn: "1h",
+    });
+
+    const refreshToken = jwt.sign({ _id: user._id }, config.JWT_SECRET, {
+      expiresIn: "7d",
+    });
+
+    user.password = undefined;
+    user.resetCode = undefined;
+    return res.json({
+      token,
+      refreshToken,
+      user,
+    });
+  }catch(error){
+    console.log(error);
+    return res.status(500).json({ error: "Something went wrong try again"});
+  }
+}
+
+export const forgotPassword = async(req,res)=>{
+  try{
+     const {email} = req.body;
+     const user = User.findOne({email})
+     if(!user){
+      return res.status(500).json({ error: "Could not find the user this email id"});
+     }else{
+      const resetCode = nanoid(6)
+      user.resetCode = resetCode
+      // user.save();
+      const token = jwt.sign({resetCode}, config.JWT_SECRET, {
+        expiresIn: "1h",
+      });
+      config.AWSSES.sendEmail(
+        emailTemplate(
+          email,
+          `
+         <p>Please click the link below to access your account</p>
+         <a href="${config.CLIENT_URL}/auth/access-account/${token}">Access My Account</a>
+        `,
+          config.REPLY_TO,
+          "Access your account"
+        ),
+        (err, data) => {
+          if (err) {
+            console.log(err);
+            return res.status(500).json({ ok: false });
+          } else {
+            console.log(data);
+            return res.status(200).json({ ok: true });
+          }
+        }
+      )
+      
+     }
+  }catch(error){
+    console.log(error);
+    return res.status(500).json({ error: "Something went wrong try again" });
+  }
+}
+
+export const accessAccount = async(req,res)=>{
+  try{
+    const {resetCode} = jwt.verify(req.body.resetCode, config.JWT_SECRET )
+    const user = await User.findOneAndUpdate({resetCode})
+    if(!user){
+      return res.json({error:"user not found"})
+    }
+    const token = jwt.sign({ _id: user._id }, config.JWT_SECRET, {
+      expiresIn: "1h",
+    });
+
+    const refreshToken = jwt.sign({ _id: user._id }, config.JWT_SECRET, {
+      expiresIn: "7d",
+    });
+
+    user.password = undefined;
+    user.resetCode = undefined;
+    return res.json({
+      token,
+      refreshToken,
+      user,
+    });
+  }catch(error){
+    console.log(error);
+    return res.status(500).json({ error: "Something went wrong try again" });
+  }
+}
