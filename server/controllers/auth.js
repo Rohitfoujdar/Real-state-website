@@ -23,13 +23,15 @@ export const preRegisterd = async (req, res) => {
     }
 
     if (password && password?.length < 6) {
-      return res.status(500).json({ error: "password should be at least 6 characters" });
+      return res
+        .status(500)
+        .json({ error: "password should be at least 6 characters" });
     }
 
-    const user = await User.findOne({email});
+    const user = await User.findOne({ email });
 
-    if(user){
-      return res.status(500).json({error:"email is already taken"})
+    if (user) {
+      return res.status(500).json({ error: "email is already taken" });
     }
 
     const token = jwt.sign({ email, password }, config.JWT_SECRET, {
@@ -94,14 +96,14 @@ export const register = async (req, res) => {
   }
 };
 
-export const login = async(req,res)=>{
-  try{
+export const login = async (req, res) => {
+  try {
     const { email, password } = req.body;
     //find user by email
-    const user = await User.findOne({email});
+    const user = await User.findOne({ email });
     //compare password
     const match = await comparePassword(password, user.password);
-    if(!match){
+    if (!match) {
       return res.status(500).json({ error: "Wrong password" });
     }
     //jwt
@@ -120,23 +122,24 @@ export const login = async(req,res)=>{
       refreshToken,
       user,
     });
-  }catch(error){
+  } catch (error) {
     console.log(error);
-    return res.status(500).json({ error: "Something went wrong try again"});
+    return res.status(500).json({ error: "Something went wrong try again" });
   }
-}
+};
 
-export const forgotPassword = async(req,res)=>{
-  try{
-     const {email} = req.body;
-     const user = User.findOne({email})
-     if(!user){
-      return res.status(500).json({ error: "Could not find the user this email id"});
-     }else{
-      const resetCode = nanoid(6)
-      user.resetCode = resetCode
-      // user.save();
-      const token = jwt.sign({resetCode}, config.JWT_SECRET, {
+export const forgotPassword = async (req, res) => {
+  try {
+    const { email } = req.body;
+    const user = User.findOne({ email });
+    if (!user) {
+      return res
+        .status(500)
+        .json({ error: "Could not find the user this email id" });
+    } else {
+      const resetCode = nanoid(6);
+      user.resetCode = resetCode;
+      const token = jwt.sign({ resetCode }, config.JWT_SECRET, {
         expiresIn: "1h",
       });
       config.AWSSES.sendEmail(
@@ -158,21 +161,20 @@ export const forgotPassword = async(req,res)=>{
             return res.status(200).json({ ok: true });
           }
         }
-      )
-      
-     }
-  }catch(error){
+      );
+    }
+  } catch (error) {
     console.log(error);
     return res.status(500).json({ error: "Something went wrong try again" });
   }
-}
+};
 
-export const accessAccount = async(req,res)=>{
-  try{
-    const {resetCode} = jwt.verify(req.body.resetCode, config.JWT_SECRET )
-    const user = await User.findOneAndUpdate({resetCode})
-    if(!user){
-      return res.json({error:"user not found"})
+export const accessAccount = async (req, res) => {
+  try {
+    const { resetCode } = jwt.verify(req.body.resetCode, config.JWT_SECRET);
+    const user = await User.findOneAndUpdate({ resetCode });
+    if (!user) {
+      return res.json({ error: "user not found" });
     }
     const token = jwt.sign({ _id: user._id }, config.JWT_SECRET, {
       expiresIn: "1h",
@@ -189,8 +191,8 @@ export const accessAccount = async(req,res)=>{
       refreshToken,
       user,
     });
-  }catch(error){
+  } catch (error) {
     console.log(error);
     return res.status(500).json({ error: "Something went wrong try again" });
   }
-}
+};
