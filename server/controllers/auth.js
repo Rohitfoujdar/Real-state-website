@@ -6,6 +6,24 @@ import User from "../models/user.js";
 import { nanoid } from "nanoid";
 import validator from "email-validator";
 
+const tokenAndUserResponse = (req, res, user) => {
+  const token = jwt.sign({ _id: user._id }, config.JWT_SECRET, {
+    expiresIn: "1h",
+  });
+
+  const refreshToken = jwt.sign({ _id: user._id }, config.JWT_SECRET, {
+    expiresIn: "7d",
+  });
+
+  user.password = undefined;
+  user.resetCode = undefined;
+  return res.json({
+    token,
+    refreshToken,
+    user,
+  });
+};
+
 export const welcome = (req, res) => {
   res.json({
     data: "Hii this is Node js api key.....",
@@ -75,21 +93,7 @@ export const register = async (req, res) => {
       password: hashedPassword,
     }).save();
 
-    const token = jwt.sign({ _id: user._id }, config.JWT_SECRET, {
-      expiresIn: "1h",
-    });
-
-    const refreshToken = jwt.sign({ _id: user._id }, config.JWT_SECRET, {
-      expiresIn: "7d",
-    });
-
-    user.password = undefined;
-    user.resetCode = undefined;
-    return res.json({
-      token,
-      refreshToken,
-      user,
-    });
+    tokenAndUserResponse(req, res, user);
   } catch (error) {
     console.log(error);
     return res.status(500).json({ error: "Something went wrong try again" });
@@ -106,22 +110,7 @@ export const login = async (req, res) => {
     if (!match) {
       return res.status(500).json({ error: "Wrong password" });
     }
-    //jwt
-    const token = jwt.sign({ _id: user._id }, config.JWT_SECRET, {
-      expiresIn: "1h",
-    });
-
-    const refreshToken = jwt.sign({ _id: user._id }, config.JWT_SECRET, {
-      expiresIn: "7d",
-    });
-
-    user.password = undefined;
-    user.resetCode = undefined;
-    return res.json({
-      token,
-      refreshToken,
-      user,
-    });
+    tokenAndUserResponse(req, res, user);
   } catch (error) {
     console.log(error);
     return res.status(500).json({ error: "Something went wrong try again" });
@@ -176,23 +165,20 @@ export const accessAccount = async (req, res) => {
     if (!user) {
       return res.json({ error: "user not found" });
     }
-    const token = jwt.sign({ _id: user._id }, config.JWT_SECRET, {
-      expiresIn: "1h",
-    });
-
-    const refreshToken = jwt.sign({ _id: user._id }, config.JWT_SECRET, {
-      expiresIn: "7d",
-    });
-
-    user.password = undefined;
-    user.resetCode = undefined;
-    return res.json({
-      token,
-      refreshToken,
-      user,
-    });
+    tokenAndUserResponse(req, res, user);
   } catch (error) {
     console.log(error);
     return res.status(500).json({ error: "Something went wrong try again" });
+  }
+};
+
+export const refreshToken = async (req, res) => {
+  try {
+    const { _id } = jwt.verify(req.headers.refresh_token, config.JWT_SECRET);
+    const user = await User.findById(_id);
+    tokenAndUserResponse(req, res, user);
+  } catch (error) {
+    console.log(error);
+    return res.status(403).json({ error: "Token is not found" });
   }
 };
