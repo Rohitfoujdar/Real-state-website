@@ -1,32 +1,24 @@
 import React, { useState } from "react";
 import axios from "axios"
-// import { API } from "../config";
 import toaster from "react-hot-toast"
 import {Link, useNavigate} from "react-router-dom";
-import { useAuth } from "../context/auth";
 
-export default function Login() {
-  const [auth, setAuth] = useAuth()
+export default function ForgetPassword() {
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const[loading, setLoading] = useState(false)
   const Navigate = useNavigate()
   const handleSubmit = async(e) => {
     e.preventDefault()
     try {
-      // console.log("email:",email, "password:",password)
       setLoading(true)
-      const {data} = await axios.post(`login`,{
+      const {data} = await axios.post(`forget-password`,{
         email,
-        password
       });
       if(data?.error){
         toaster.error(data.error)
         setLoading(false)
       }else{
-        setAuth(data)
-        localStorage.setItem("auth", JSON.stringify(data))
-        toaster.success("Login Successfully")
+        toaster.success("Please check your email to reset your password")
         setLoading(false);
         Navigate("/")
       }
@@ -40,7 +32,7 @@ export default function Login() {
   return (
     <div>
       <h3 className="display-1 bg-primary p-5 text-light">
-        Login
+        Forget password
       </h3>
 
       <div className="">
@@ -56,18 +48,9 @@ export default function Login() {
                 value={email}
                 onChange={(e)=>setEmail(e.target.value)}
               />
-              <input
-                type="password"
-                placeholder="password"
-                className="form-control mb-4"
-                required
-                autoFocus
-                value={password}
-                onChange={(e)=>setPassword(e.target.value)}
-              />
-              <button className="btn btn-primary col-12 mb-4">{loading? "Waiting..." : "Login"}</button>
+              <button className="btn btn-primary col-12 mb-4">{loading? "Waiting..." : "Submit"}</button>
             </form>
-            <Link className="text-danger" to="/auth/forget-password">Forget password</Link>
+            <Link className="text-danger" to="/login">Back to login</Link>
           </div>
         </div>
       </div>

@@ -6,24 +6,24 @@ import {useNavigate} from "react-router-dom";
 import { useAuth } from '../../context/auth';
 
 
-export default function AccounActivate() {
+export default function AccessAccount() {
   const {token} = useParams()
   const Navigate = useNavigate()
     const [auth, setAuth] = useAuth();
 
   useEffect(()=>{
-    if(token) requestActivation();
+    if(token) requestAccess();
   },[token])
 
-  const requestActivation = async()=>{
+  const requestAccess = async()=>{
     try{
-      const {data} = await axios.post(`register`,{token});
+      const {data} = await axios.post(`access-account`,{token});
       if(data?.error){
         toaster.error(data.error)
       }else{
         localStorage.setItem("auth", JSON.stringify(data))
         setAuth(data)
-        toaster.success("Successfully login. Welcome to Realist app")
+        toaster.success("Please update your password in profile page")
         Navigate("/")
       }
     }catch(error){
