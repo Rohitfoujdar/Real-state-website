@@ -9,7 +9,7 @@ import { token } from "morgan";
 
 const tokenAndUserResponse = (req, res, user) => {
   const token = jwt.sign({ _id: user._id }, config.JWT_SECRET, {
-    expiresIn: "1h",
+    expiresIn: "10s",
   });
 
   const refreshToken = jwt.sign({ _id: user._id }, config.JWT_SECRET, {
