@@ -1,47 +1,45 @@
 import React, { useState } from "react";
-import axios from "axios"
+import axios from "axios";
 // import { API } from "../config";
-import toaster from "react-hot-toast"
-import {Link, useNavigate} from "react-router-dom";
+import toaster from "react-hot-toast";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/auth";
 
 export default function Login() {
-  const [auth, setAuth] = useAuth()
+  const [auth, setAuth] = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const[loading, setLoading] = useState(false)
-  const Navigate = useNavigate()
-  const handleSubmit = async(e) => {
-    e.preventDefault()
+  const [loading, setLoading] = useState(false);
+  const Navigate = useNavigate();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
     try {
       // console.log("email:",email, "password:",password)
-      setLoading(true)
-      const {data} = await axios.post(`login`,{
+      setLoading(true);
+      const { data } = await axios.post(`login`, {
         email,
-        password
+        password,
       });
-      if(data?.error){
-        toaster.error(data.error)
-        setLoading(false)
-      }else{
-        setAuth(data)
-        localStorage.setItem("auth", JSON.stringify(data))
-        toaster.success("Login Successfully")
+      if (data?.error) {
+        toaster.error(data.error);
         setLoading(false);
-        Navigate("/")
+      } else {
+        setAuth(data);
+        localStorage.setItem("auth", JSON.stringify(data));
+        toaster.success("Login Successfully");
+        setLoading(false);
+        Navigate("/");
       }
-      console.log(data)
+      console.log(data);
     } catch (error) {
       console.log(error);
-      toaster.error("Something went wrong try again")
-      setLoading(false)
+      toaster.error("Something went wrong try again");
+      setLoading(false);
     }
   };
   return (
     <div>
-      <h3 className="display-1 bg-primary p-5 text-light">
-        Login
-      </h3>
+      <h3 className="display-1 bg-primary p-5 text-light">Login</h3>
 
       <div className="">
         <div className="row">
@@ -54,7 +52,7 @@ export default function Login() {
                 required
                 autoFocus
                 value={email}
-                onChange={(e)=>setEmail(e.target.value)}
+                onChange={(e) => setEmail(e.target.value)}
               />
               <input
                 type="password"
@@ -63,11 +61,15 @@ export default function Login() {
                 required
                 autoFocus
                 value={password}
-                onChange={(e)=>setPassword(e.target.value)}
+                onChange={(e) => setPassword(e.target.value)}
               />
-              <button className="btn btn-primary col-12 mb-4">{loading? "Waiting..." : "Login"}</button>
+              <button className="btn btn-primary col-12 mb-4">
+                {loading ? "Waiting..." : "Login"}
+              </button>
             </form>
-            <Link className="text-danger" to="/auth/forget-password">Forget password</Link>
+            <Link className="text-danger" to="/auth/forget-password">
+              Forget password
+            </Link>
           </div>
         </div>
       </div>

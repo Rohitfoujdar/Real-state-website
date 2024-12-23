@@ -161,19 +161,24 @@ export const forgotPassword = async (req, res) => {
       (err, data) => {
         if (err) {
           console.log(err);
-          return res.status(500).json({ ok: false, error: "Email could not be sent" });
+          return res
+            .status(500)
+            .json({ ok: false, error: "Email could not be sent" });
         } else {
           console.log("Email sent successfully:", data);
-          return res.status(200).json({ ok: true, message: "Reset code sent to your email" });
+          return res
+            .status(200)
+            .json({ ok: true, message: "Reset code sent to your email" });
         }
       }
     );
   } catch (error) {
     console.log("Forgot Password Error:", error);
-    return res.status(500).json({ error: "Something went wrong, please try again" });
+    return res
+      .status(500)
+      .json({ error: "Something went wrong, please try again" });
   }
 };
-
 
 export const accessAccount = async (req, res) => {
   try {
@@ -199,18 +204,20 @@ export const accessAccount = async (req, res) => {
     console.log("User Found:", user);
 
     if (!user) {
-      return res.status(500).json({ error: "User not found or invalid reset code" });
+      return res
+        .status(500)
+        .json({ error: "User not found or invalid reset code" });
     }
 
     // Step 4: Generate new tokens for the user
     tokenAndUserResponse(req, res, user);
   } catch (error) {
     console.log("Access Account Error:", error);
-    return res.status(500).json({ error: "Something went wrong, please try again" });
+    return res
+      .status(500)
+      .json({ error: "Something went wrong, please try again" });
   }
 };
-
-
 
 export const refreshToken = async (req, res) => {
   try {
@@ -223,64 +230,68 @@ export const refreshToken = async (req, res) => {
   }
 };
 
-export const currentUser = async(req, res)=>{
-  try{
+export const currentUser = async (req, res) => {
+  try {
     const user = await User.findById(req.user._id);
     user.password = undefined;
-  user.resetCode = undefined;
-  return res.json({user})
-  }catch(error){
+    user.resetCode = undefined;
+    return res.json({ user });
+  } catch (error) {
     console.log(error);
     return res.status(403).json({ error: "Unauthorized" });
   }
 };
 
-export const publicProfile= async(req, res)=>{
-  try{
-    console.log(req.params.username)
-    const user = await User.findOne({username:req.params.username})
+export const publicProfile = async (req, res) => {
+  try {
+    console.log(req.params.username);
+    const user = await User.findOne({ username: req.params.username });
     user.password = undefined;
-    user.resetCode = undefined
-    return res.json({user})
-  }catch(error){
-    console.log('err ---- ',error);
+    user.resetCode = undefined;
+    return res.json({ user });
+  } catch (error) {
+    console.log("err ---- ", error);
     return res.status(403).json({ error: "user does not exist" });
   }
-}
+};
 
-export const updatePassword = async(req, res)=>{
-  try{
-   const {password} = req.body;
-   if (!password) {
-    return res.status(500).json({ error: "password is required" });
-  }
+export const updatePassword = async (req, res) => {
+  try {
+    const { password } = req.body;
+    if (!password) {
+      return res.status(500).json({ error: "password is required" });
+    }
 
-  if (password && password?.length < 6) {
-    return res
-      .status(500)
-      .json({ error: "password should be at least 6 characters" });
-  }
-  const user = await User.findByIdAndUpdate(req.user._id, {
-    password: await hashPassword(password),
-  })
-  return res.json({ok:true})
-  }catch(error){
+    if (password && password?.length < 6) {
+      return res
+        .status(500)
+        .json({ error: "password should be at least 6 characters" });
+    }
+    const user = await User.findByIdAndUpdate(req.user._id, {
+      password: await hashPassword(password),
+    });
+    return res.json({ ok: true });
+  } catch (error) {
     console.log(error);
     return res.status(403).json({ error: "Unauthorized" });
   }
 };
 
-export const updateProfile = async(req, res)=>{
-  try{
-     const user = await User.findByIdAndUpdate(req.user._id, req.body, {new:true} )
-     user.password = undefined;
-     user.resetCode = undefined
-     return res.json({user})
-  }catch(error){
+export const updateProfile = async (req, res) => {
+  try {
+    const user = await User.findByIdAndUpdate(req.user._id, req.body, {
+      new: true,
+    });
+    user.password = undefined;
+    user.resetCode = undefined;
+    return res.json({ user });
+  } catch (error) {
     console.log(error);
-    if(error.codeName==="DuplicateKey"){
-      return res.status(500).json({error:"Username or email is already taken"})
+    if (error.codeName === "DuplicateKey") {
+      return res
+        .status(500)
+        .json({ error: "Username or email is already taken" });
     }
     return res.status(403).json({ error: "Unauthorized" });
   }
-}
+};
