@@ -5,9 +5,10 @@ import cors from "cors";
 const app = express();
 import { DATABASE } from "./config.js";
 import Authroute from "./route/auth.js";
+import Adroute from "./route/ad.js"
 
 //middleware//
-app.use(express.json());
+app.use(express.json({limit: "10mb"}));
 app.use(cors());
 app.use(morgan("dev"));
 // dotenv.config();
@@ -23,6 +24,7 @@ try {
 
 //Routes middleware//
 app.use("/", Authroute);
+app.use("/", Adroute);
 
 app.listen(8000, () => {
   console.log("listening on port : 8000");

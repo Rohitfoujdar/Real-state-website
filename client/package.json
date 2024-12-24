@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "antd": "^5.22.6",
     "axios": "^1.7.9",
     "cra-template": "1.2.0",
     "react": "^19.0.0",
@@ -10,6 +11,7 @@
     "react-dom": "^19.0.0",
     "react-google-places-autocomplete": "^4.1.0",
     "react-hot-toast": "^2.4.1",
+    "react-image-file-resizer": "^0.4.8",
     "react-router-dom": "^7.0.2",
     "react-scripts": "5.0.1",
     "web-vitals": "^4.2.4"
