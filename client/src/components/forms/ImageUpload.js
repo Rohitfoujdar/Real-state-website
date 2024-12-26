@@ -50,6 +50,7 @@ export default function ImageUpload({ ad, setAd }) {
 
   const handleDelete = async (file) => {
     const answer = window.confirm("Delete image?")
+    console.log("_____>", file)
     if(!answer) return;
     setAd({ ...ad, uploading: false });
     try {
