@@ -9,7 +9,6 @@ export default function ImageUpload({ ad, setAd }) {
       let files = e.target.files;
       files = [...files];
       if (files?.length) {
-        console.log(files);
         setAd({ ...ad, uploading: true });
 
         files.map((file) => {

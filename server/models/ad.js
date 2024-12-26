@@ -10,7 +10,7 @@ const Schema = new mongoose.Schema(
     bedrooms:Number,
     bathrooms:Number,
     carparks:Number,
-    landsize:Number,
+    landsize:String,
     location:{
         type:{
             type:String,
