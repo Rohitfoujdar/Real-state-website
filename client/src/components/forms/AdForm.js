@@ -13,7 +13,7 @@ export default function AdForm({ action, type }) {
     photos: [],
     uploading: false,
     price: "",
-    address: "sdney",
+    address: "sydney",
     bedrooms: "",
     bathrooms: "",
     carparks: "",

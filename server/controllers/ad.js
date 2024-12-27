@@ -104,3 +104,20 @@ export const create = async (req, res) => {
     console.log(error);
   }
 };
+
+export const Ads = async(req, res)=>{
+   try{
+     const adsForSell = await Ad.find({action:"Sell"})
+     .select("-location -photos.ETag -photos.Key -photos.key")
+     .sort({createdAt:-1})
+     .limit(12)  
+
+     const adsForRent = await Ad.find({action:"Rent"})
+     .select("-location -photos.ETag -photos.Key -photos.key")
+     .sort({createdAt:-1})
+     .limit(12)
+     return res.status(200).json({adsForSell, adsForRent})
+   }catch(err){
+    console.log(err)
+   }
+}
