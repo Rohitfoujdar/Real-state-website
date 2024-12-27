@@ -40,7 +40,7 @@ function App() {
             <Route path='ad/create/rent/house' element={<RentHouse/>}/>
             <Route path='ad/create/rent/land' element={<RentLand/>}/>
           </Route>
-          <Route path='ad/:slug' element={<AdView/>}/>
+          <Route path='/ad/:slug' element={<AdView/>}/>
           </Routes>
         </AuthProvider>
       </BrowserRouter>
