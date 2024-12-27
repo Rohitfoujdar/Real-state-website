@@ -12,9 +12,12 @@ code {
     monospace;
 } */
 
-.active{
-  color:white;
-  background-color: #2196f3;
+.active {
+  color: white;
+  background: #2196f3;
+}
+.pointer {
+  cursor: pointer;
 }
 
 .hoverable:hover{
