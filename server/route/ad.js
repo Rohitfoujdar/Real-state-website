@@ -8,7 +8,7 @@ router.post("/remove-image", requireSignin, removeImage);
 router.post("/ad", requireSignin, create);
 router.get("/ads", Ads);
 router.get("/ad/:slug", read)
-router.post("/whishlist", requireSignin, addToWishlist);
-router.delete("/whishlist/:adId", requireSignin, removeFromWishlist);
+router.post("/wishlist",requireSignin, addToWishlist);
+router.delete("/wishlist/:adId", requireSignin, removeFromWishlist);
 
 export default router;

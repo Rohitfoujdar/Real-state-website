@@ -154,7 +154,8 @@ export const addToWishlist = async (req, res) => {
     );
 
     const { password, resetCode, ...rest } = user._doc;
-    return res.json(rest);
+
+    res.json(rest);
   } catch (err) {
     console.log(err);
   }

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 // import { API } from "../config";
 import toaster from "react-hot-toast";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../context/auth";
 
 export default function Login() {
@@ -11,6 +11,8 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const Navigate = useNavigate();
+  const location = useLocation()
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -28,7 +30,7 @@ export default function Login() {
         localStorage.setItem("auth", JSON.stringify(data));
         toaster.success("Login Successfully");
         setLoading(false);
-        Navigate("/");
+        location.state !== null ? Navigate(location.state):  Navigate("/dashboard");
       }
       console.log(data);
     } catch (error) {
