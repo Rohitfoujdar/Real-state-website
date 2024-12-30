@@ -19,11 +19,7 @@ export default function AdCard({ ad }) {
         >
           <div className="card hoverable shadow">
             <img
-              src={
-                ad?.type === "House"
-                  ? "https://m.economictimes.com/thumb/height-450,width-600,imgsize-22382,msid-111780228/which-mansion-tops-the-list-of-the-worlds-most-expensive-houses.jpg"
-                  : "https://i1.au.reastatic.net/712x480,smart=85,r=33,g=40,b=46,quality=60,progressive/002c0070af054375c1bdb7cb446c8d2b8a7edf11edcb06c648a369c0d038df0c/image0.jpg"
-              }
+              src={ad?.photos}
               alt={`${ad?.type}-${ad?.address}-${ad?.action}-${ad?.price}`}
               style={{ height: "250px", objectFit: "cover" }}
             />
