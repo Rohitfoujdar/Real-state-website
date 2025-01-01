@@ -18,7 +18,7 @@ export default function LikeUnlike({ ad }) {
         });
         return;
       }
-      const { data } = await axios.post("/wishlist", { adId: ad._id });
+      const { data } = await axios.post("wishlist", { adId: ad._id });
       setAuth({ ...auth, user: data });
       const fromLS = JSON.parse(localStorage.getItem("auth"));
       fromLS.user = data;
@@ -37,7 +37,7 @@ export default function LikeUnlike({ ad }) {
         });
         return;
       }
-      const { data } = await axios.delete(`/wishlist/${ad._id}`);
+      const { data } = await axios.delete(`wishlist/${ad._id}`);
       setAuth({ ...auth, user: data });
       const fromLS = JSON.parse(localStorage.getItem("auth"));
       fromLS.user = data;

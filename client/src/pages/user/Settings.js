@@ -10,23 +10,27 @@ export default function Setting() {
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+    e.preventDefault(); // Prevent default form submission behavior
     try {
-      setLoading(true);
-      const { data } = await axios.put("update-password", {
-        password,
-      });
-      if (data?.error) {
-        toast.error(data.error);
-        setLoading(false)
+      setLoading(true); // Show loading state
+  
+      const { data } = await axios.put("/update-password", { password });
+  
+      // Handle error returned from the API response
+      if (data.error) {
+        toast.error(data.error); // Display the error message from the response
       } else {
-        setLoading(false);
-        toast.success("Password updated");
+        toast.success("Password updated successfully!"); // Success message
       }
-    } catch (err) {
-      console.log(err);
+    } catch (error) {
+      // Handle network or unexpected errors
+      const errorMessage = error.response?.data?.error || "An unexpected error occurred.";
+      toast.error(errorMessage); // Display the error in the toast
+    } finally {
+      setLoading(false); // Reset loading state
     }
   };
+  
 
   return (
     <>
@@ -48,7 +52,7 @@ export default function Setting() {
                   className="btn btn-primary col-12 mb-4"
                   disabled={loading}
                 >
-                  {loading ? "Processing" : "Update password"}
+                  {loading ? "Processing..." : "Update password"}
                 </button>
               </form>
             </div>

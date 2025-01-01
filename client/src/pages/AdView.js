@@ -9,6 +9,7 @@ import HTMLRenderer from 'react-html-renderer'
 import AdCard from "../components/cards/AdCard";
 import relativeTime from "dayjs/plugin/relativeTime";
 import LikeUnlike from "../components/misc/LikeUnlike";
+import ContactSeller from "../components/forms/ContactSeller";
 dayjs.extend(relativeTime);
 
 export default function AdView() {
@@ -69,6 +70,9 @@ export default function AdView() {
             <HTMLRenderer html={ad?.description?.replaceAll(".", "<br/><br/>")} />
           </div>
         </div>
+      </div>
+      <div className="container">
+        <ContactSeller ad={ad}/>
       </div>
       <div className="container">
          <h4 className="text-center">Related Properties</h4>

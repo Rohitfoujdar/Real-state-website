@@ -12,6 +12,10 @@ code {
     monospace;
 } */
 
+body{
+  font-family: "poppins";
+}
+
 .active {
   color: white;
   background: #2196f3;

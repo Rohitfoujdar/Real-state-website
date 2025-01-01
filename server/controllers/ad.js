@@ -3,6 +3,7 @@ import { nanoid } from "nanoid";
 import slugify from "slugify";
 import Ad from "../models/ad.js";
 import User from "../models/user.js";
+import { emailTemplate } from "../helpers/email.js";
 
 export const uploadImage = async (req, res) => {
   try {
@@ -84,7 +85,7 @@ export const create = async (req, res) => {
     const ad = await new Ad({
       ...req.body,
       slug: slugify(`${type}-${address}-${price}-${nanoid(6)}`),
-      postedBy: req.user_id,
+      postedBy: req.user._id,
     }).save();
 
     //make user role >>> Seller >>>>>>
@@ -176,3 +177,47 @@ export const removeFromWishlist = async (req, res) => {
     console.log(err);
   }
 };
+
+export const contactSeller = async(req, res) =>{
+  try{
+      const {name, email, adId, phone, message} = req.body;
+      const ad = await Ad.findById(adId).populate("postedBy", "email");
+      const user = await User.findByIdAndUpdate(req.user._id, {
+        $addToSet:{
+          enquiredProperties: adId
+        }
+      })
+      if(!user){
+        return res.json({error:"Could not find user with that email"})
+      }else{
+        config.AWSSES.sendEmail(
+          emailTemplate(
+            ad.postedBy.email,
+            `
+           <p>You have recieved a new customer enquiry</p>
+              <h4>Customer details</h4>
+               <p>Name: ${name}</p>
+               <p>Email: ${email}</p>
+               <p>Phone: ${phone}</p>
+               <p>Message: ${message}</p>
+
+           <a href="${config.CLIENT_URL}/ad/${ad.slug}">${ad.type} in ${ad.address} for ${ad.action} ${ad.price}</a>
+          `,
+            email,
+            "New enquiry recieve"
+          ),
+          (err, data) => {
+            if (err) {
+              console.log(err);
+              return res.status(500).json({ ok: false });
+            } else {
+              console.log(data);
+              return res.status(200).json({ ok: true });
+            }
+          }
+        );
+      }
+  }catch(err){
+     console.log(err)
+  }
+}
