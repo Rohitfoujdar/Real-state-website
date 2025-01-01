@@ -5,6 +5,7 @@ import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import slugify from "slugify";
 import Sidebar from "../../components/nav/Sidebar";
+import ProfileUpload from "../../components/forms/ProfileUpload";
 
 export default function Profile() {
   // context
@@ -39,16 +40,21 @@ export default function Profile() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      console.log({
-        username,
-        name,
-        email,
-        company,
-        address,
-        phone,
-        about,
-        photo,
-      });
+        setUploading(true)
+        const {data} = await axios.put("update-profile", {
+          username,name, email, phone, company, address, photo, about
+        })
+        if(data?.error){
+          toast.error(data.error)
+        }else{
+          console.log("update profile response==>", data)
+          setAuth({...auth, user:data})
+          const fromLS = JSON.parse(localStorage.getItem("auth"))
+          fromLS.user=data
+          localStorage.setItem("auth", JSON.stringify(fromLS));
+          setUploading(false)
+          toast.success("Profile updated")
+        }
     } catch (err) {
       console.log(err);
     }
@@ -62,6 +68,7 @@ export default function Profile() {
         <div className="container mt-2">
           <div className="row">
             <div className="col-lg-8 offset-lg-2">
+              <ProfileUpload photo={photo} setPhoto={setPhoto}  uploading={uploading} setUploading={setUploading} />
               <form onSubmit={handleSubmit}>
                 <input
                   type="text"

@@ -20,6 +20,11 @@ export default function Sidebar() {
             Pofile
           </NavLink>
         </li>
+        <li className="nav-item">
+          <NavLink className="nav-link" to="/user/settings">
+           Setting
+          </NavLink>
+        </li>
       </ul>
     </div>
   );

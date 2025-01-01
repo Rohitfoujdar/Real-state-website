@@ -284,14 +284,13 @@ export const updateProfile = async (req, res) => {
     });
     user.password = undefined;
     user.resetCode = undefined;
-    return res.json({ user });
-  } catch (error) {
-    console.log(error);
-    if (error.codeName === "DuplicateKey") {
-      return res
-        .status(500)
-        .json({ error: "Username or email is already taken" });
+    res.json(user);
+  } catch (err) {
+    console.log(err);
+    if (err.codeName === "DuplicateKey") {
+      return res.json({ error: "Username or email is already taken" });
+    } else {
+      return res.status(403).json({ error: "Unauhorized" });
     }
-    return res.status(403).json({ error: "Unauthorized" });
   }
 };
