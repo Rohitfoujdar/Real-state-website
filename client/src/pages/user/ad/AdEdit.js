@@ -76,6 +76,24 @@ export default function AdEdit({ action, type }) {
       setAd({ ...ad, loading: false });
     }
   };
+
+  const handleDelete = async () => {
+    try {
+      setAd({ ...ad, loading: true });
+             const { data } = await axios.delete(`ad/${ad._id}`);
+        if (data?.error) {
+          toast.error(data.error);
+          setAd({ ...ad, loading: false });
+        } else {
+          toast.success("Ad Deleted Successfully");
+          setAd({ ...ad, loading: false });
+          navigate("/dashboard");
+      }
+    } catch (err) {
+      console.log(err);
+      setAd({ ...ad, loading: false });
+    }
+  };
   return (
     <div className="">
       <h1 className="display-1 bg-primary text-light p-5">Ad Edit</h1>
@@ -164,14 +182,21 @@ export default function AdEdit({ action, type }) {
           onChange={(e) => setAd({ ...ad, description: e.target.value })}
         />
 
-        <button
+       <div className="d-flex justify-content-between">
+       <button
           onClick={handleClick}
           className={`btn btn-primary ${ad.loading ? "disabled" : ""} mb-5`}
         >
           {ad.loading ? "Saving..." : "Submit"}
         </button>
-        <br />
-        {/* <pre>{JSON.stringify(ad, null, 4)}</pre> */}
+
+        <button
+          onClick={handleDelete}
+          className={`btn btn-danger ${ad.loading ? "disabled" : ""} mb-5`}
+        >
+          {ad.loading ? "Deleting..." : "Delete"}
+        </button>
+       </div>
       </div>
     </div>
   );

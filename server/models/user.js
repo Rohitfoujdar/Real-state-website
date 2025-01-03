@@ -55,15 +55,15 @@ const Schema = new mongoose.Schema(
       enum: ["Buyer", "Seller", "Admin"],
     },
 
-    enquiredProperties: {
+    enquiredProperties: [{
       type: ObjectId,
       ref: "Ad",
-    },
+    }],
 
-    wishlist: {
+    wishlist: [{
       type: ObjectId,
       ref: "Ad",
-    },
+    }],
 
     resetCode: {
       type: String,

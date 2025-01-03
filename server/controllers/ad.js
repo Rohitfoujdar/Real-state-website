@@ -149,16 +149,25 @@ export const addToWishlist = async (req, res) => {
     const user = await User.findByIdAndUpdate(
       req.user._id,
       {
-        $addToSet: { wishlist: req.body.adId },
+        $addToSet: { wishlist: req.body.adId }, // Prevent duplicate entries
       },
-      { new: true }
+      { new: true } // Return the updated document
     );
 
-    const { password, resetCode, ...rest } = user._doc;
+    if (!user) {
+      return res.status(404).json({ error: "User not found or update failed" });
+    }
 
-    res.json(rest);
+    // Exclude sensitive fields
+    user.password = undefined;
+    user.resetCode = undefined;
+
+    console.log("added to wishlist => ", user);
+
+    res.json(user); // Return the updated user
   } catch (err) {
     console.log(err);
+    res.status(500).json({ error: "Something went wrong" });
   }
 };
 
@@ -171,8 +180,11 @@ export const removeFromWishlist = async (req, res) => {
       },
       { new: true }
     );
+
     const { password, resetCode, ...rest } = user._doc;
-    return res.json(rest);
+    // console.log("remove from wishlist => ", rest);
+
+    res.json(rest);
   } catch (err) {
     console.log(err);
   }
@@ -281,5 +293,45 @@ export const update = async (req, res) => {
   } catch (err) {
     console.log(err);
     return res.status(500).json({ error: "Something went wrong" });
+  }
+};
+
+export const enquiredProperties = async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id);
+    const ads = await Ad.find({ _id: user.enquiredProperties }).sort({
+      createdAt: -1,
+    });
+    console.log(user.enquiredProperties);
+    return res.json(ads);
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+export const wishlist = async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id);
+    const ads = await Ad.find({ _id: user.wishlist }).sort({ createdAt: -1 });
+    return res.json(ads);
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+export const deleteAd = async (req, res) => {
+  try {
+    const ad = await Ad.findById(req.params._id);
+
+    // Check ownership
+    const owner = req.user._id == ad?.postedBy;
+    if (!owner) {
+      return res.json({ error: "Permission denied" });
+    } else {
+      await Ad.findByIdAndDelete(ad._id);
+      return res.json({ ok: true });
+    }
+  } catch (err) {
+    console.log(err);
   }
 };

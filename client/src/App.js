@@ -21,6 +21,8 @@ import Footer from './components/nav/Footer';
 import Profile from './pages/user/Profile';
 import Setting from './pages/user/Settings';
 import AdEdit from './pages/user/ad/AdEdit';
+import Enquiries from './pages/user/Enquiries';
+import Whishlist from './pages/user/Wishlist';
 
 function App() {
   return (
@@ -46,6 +48,8 @@ function App() {
             <Route path='user/profile' element={<Profile/>}/>
             <Route path='user/settings' element={<Setting/>}/>
             <Route path='user/ad/:slug' element={<AdEdit/>}/>
+            <Route path='user/whishlist' element={<Whishlist/>}/>
+            <Route path='user/enquiries' element={<Enquiries/>}/>
           </Route>
           <Route path='/ad/:slug' element={<AdView/>}/>
           </Routes>

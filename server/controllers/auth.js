@@ -13,7 +13,7 @@ const tokenAndUserResponse = (req, res, user) => {
   });
 
   const refreshToken = jwt.sign({ _id: user._id }, config.JWT_SECRET, {
-    expiresIn: "7d",
+    expiresIn: "20d",
   });
 
   user.password = undefined;

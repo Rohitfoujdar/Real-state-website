@@ -11,6 +11,16 @@ export default function Sidebar() {
           </NavLink>
         </li>
         <li className="nav-item">
+          <NavLink className="nav-link" to="/user/whishlist">
+            Whishlist
+          </NavLink>
+        </li>
+        <li className="nav-item">
+          <NavLink className="nav-link" to="/user/enquiries">
+            Enquiries
+          </NavLink>
+        </li>
+        <li className="nav-item">
           <NavLink className="nav-link" to="/ad/create">
             Create Ad
           </NavLink>

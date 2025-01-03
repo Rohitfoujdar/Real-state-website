@@ -24,6 +24,7 @@ export default function LikeUnlike({ ad }) {
       fromLS.user = data;
       localStorage.setItem("auth", JSON.stringify(fromLS));
       toast.success("Added to wishlist");
+      console.log(data)
     } catch (err) {
       console.log(err);
     }
